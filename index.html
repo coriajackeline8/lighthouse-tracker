@@ -1,0 +1,89 @@
+<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lighthouse Connection Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Lighthouse Connection Tracker</h1>
+            <p class="subtitle">Document your lighthouse visits and connections</p>
+        </header>
+        
+        <div class="intro-text">
+            <p>Use this form to track all the lighthouses you have visited or plan to visit. For each lighthouse, provide its location, the people you connected with there, and the scheduled date and time of your visit.</p>
+            <p><strong>All responses are automatically saved to Google Sheets for easy tracking.</strong></p>
+        </div>
+        
+        <form id="lighthouseForm">
+            <!-- User Information Section -->
+            <div class="form-section user-info-section">
+                <h2 class="section-title">Your Information</h2>
+                <div class="user-info-grid">
+                    <div class="form-group">
+                        <label for="userName" class="required-field">Your Name:</label>
+                        <input type="text" id="userName" placeholder="Enter your full name" required>
+                        <small>Who is filling out this form?</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="leaderName" class="required-field">Leader Name:</label>
+                        <input type="text" id="leaderName" placeholder="Enter leader's name" required>
+                        <small>Who is leading this lighthouse activity?</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="userEmail">Email Address (optional):</label>
+                        <input type="email" id="userEmail" placeholder="your.email@example.com">
+                        <small>For confirmation or follow-up</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="groupName">Group/Organization (optional):</label>
+                        <input type="text" id="groupName" placeholder="e.g., Scouts, Club, Team">
+                        <small>If applicable</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h2 class="section-title">How many lighthouses do you want to add?</h2>
+                <div class="form-group">
+                    <label for="lighthouseCount" class="required-field">Number of Lighthouses:</label>
+                    <input type="number" id="lighthouseCount" class="lighthouse-count" min="1" max="20" value="1" required>
+                    <small>Enter how many lighthouses you want to track (max: 20)</small>
+                </div>
+                <button type="button" id="generateEntries" class="btn btn-secondary">Generate Entry Forms</button>
+            </div>
+            
+            <div class="form-section">
+                <h2 class="section-title">Lighthouse Details</h2>
+                <div id="lighthouseEntries">
+                    <div class="empty-state">
+                        <h3>No lighthouse entries yet</h3>
+                        <p>Enter the number of lighthouses above and click "Generate Entry Forms" to get started.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="google-sheets-info">
+                <p><strong>📊 Google Sheets Integration:</strong> All submissions are automatically saved to a Google Sheet. You can view all responses at: <a href="#" id="googleSheetsLink">https://docs.google.com/spreadsheets/d/1aqP0Ae18LqA-JuxPFcERLq4EnDfMN2p47LJqdhQYz6o/edit?gid=0#gid=0</a></p>
+                <p><small>Note: You'll need to set up the Google Sheet first (instructions in setup).</small></p>
+            </div>
+            
+            <div class="buttons">
+                <button type="button" id="addAnother" class="btn btn-secondary">+ Add Another Lighthouse</button>
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    Submit to Google Sheets
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
