@@ -78,6 +78,7 @@ input[type="text"],
 input[type="number"],
 input[type="datetime-local"],
 input[type="email"],
+input[type="tel"],
 textarea,
 select {
     width: 100%;
@@ -289,6 +290,7 @@ select:focus {
     margin-top: 20px;
     border-left: 4px solid #34a853;
     font-size: 0.95rem;
+    display: none;
 }
 
 .google-sheets-info a {
