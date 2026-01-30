@@ -10,13 +10,13 @@
 <body>
     <div class="container">
         <header>
-            <h1>Lighthouse Connection Tracker</h1>
-            <p class="subtitle">Document your lighthouse visits and connections</p>
+            <h1>Lighthouse Ministry Report</h1>
+            <p class="subtitle">"You are the light of the world. A city that is set on a hill cannot be hidden." -Matthew 5:14</p>
         </header>
         
         <div class="intro-text">
-            <p>Use this form to track all the lighthouses you have visited or plan to visit. For each lighthouse, provide its location, the people you connected with there, and the scheduled date and time of your visit.</p>
-            <p><strong>All responses are automatically saved to Google Sheets for easy tracking.</strong></p>
+            <p>Welcome, fellow lighthouse keeper. This form helps us steward the lighthouses under our care. For each Lighthouse in our network, please share: the location, Attendee(s), and the appointed date/time for meeting.</p>
+            <p><strong>Every entry is faithfully preserved as we expand His light to the world.</strong></p>
         </div>
         
         <form id="lighthouseForm">
@@ -33,7 +33,7 @@
                     <div class="form-group">
                         <label for="leaderName" class="required-field">Leader Name:</label>
                         <input type="text" id="leaderName" placeholder="Enter leader's name" required>
-                        <small>Who is leading this lighthouse activity?</small>
+                        <small>Your leaders name</small>
                     </div>
                     
                     <div class="form-group">
@@ -43,9 +43,9 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="groupName">Group/Organization (optional):</label>
-                        <input type="text" id="groupName" placeholder="e.g., Scouts, Club, Team">
-                        <small>If applicable</small>
+                        <label for="userPhone" class="required-field">Phone Number:</label>
+                        <input type="tel" id="userPhone" placeholder="(123) 456-7890" required>          
+     <small>For contact purposes - required</small>
                     </div>
                 </div>
             </div>
@@ -78,7 +78,7 @@
             <div class="buttons">
                 <button type="button" id="addAnother" class="btn btn-secondary">+ Add Another Lighthouse</button>
                 <button type="submit" class="btn btn-primary" id="submitBtn">
-                    Submit to Google Sheets
+                    Submit
                 </button>
             </div>
         </form>
