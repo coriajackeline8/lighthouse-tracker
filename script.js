@@ -7,30 +7,35 @@ document.addEventListener('DOMContentLoaded', function() {
     const userNameInput = document.getElementById('userName');
     const leaderNameInput = document.getElementById('leaderName');
     const userEmailInput = document.getElementById('userEmail');
-    const groupNameInput = document.getElementById('groupName');
+    const userPhoneInput = document.getElementById('userPhone');
     const submitBtn = document.getElementById('submitBtn');
     const googleSheetsLink = document.getElementById('googleSheetsLink');
     
     let lighthouseCounter = 0;
     
-    // Function to create a new lighthouse entry
-    function createLighthouseEntry(index) {
-        lighthouseCounter++;
-        const entryId = `lighthouse-${lighthouseCounter}`;
+   // Function to create a new lighthouse entry
+    function createLighthouseEntry(entryNumber = null) {
+        // If no entryNumber provided, use the next counter
+        if (entryNumber === null) {
+            lighthouseCounter++;
+            entryNumber = lighthouseCounter;
+        }
+        
+        const entryId = `lighthouse-${entryNumber}`;
         
         const entryHTML = `
             <div class="lighthouse-entry" id="${entryId}">
                 <div class="entry-header">
                     <div class="entry-title">
-                        <span class="counter-badge">${lighthouseCounter}</span>
-                        Lighthouse #${lighthouseCounter}
+                        <span class="counter-badge">${entryNumber}</span>
+                        Lighthouse #${entryNumber}
                     </div>
                     <button type="button" class="remove-btn" onclick="removeLighthouseEntry('${entryId}')">Remove</button>
                 </div>
                 
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="name-${entryId}" class="required-field">Lighthouse Name:</label>
+                        <label for="name-${entryId}" class="required-field">Lighthouse Host:</label>
                         <input type="text" id="name-${entryId}" placeholder="e.g., Cape Hatteras Lighthouse" required>
                     </div>
                     
@@ -64,9 +69,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         return entryHTML;
     }
-    
     // Function to generate lighthouse entries based on count
     function generateLighthouseEntries() {
+ // Check if there are existing entries
+        const existingEntries = document.querySelectorAll('.lighthouse-entry');
+        if (existingEntries.length > 0) {
+            const confirmReset = confirm('Generating new entries will clear your current lighthouse data. Continue?');
+            if (!confirmReset) return;
+        }
         // First validate user info
         if (!userNameInput.value.trim()) {
             alert('Please enter your name before generating lighthouse entries.');
@@ -79,6 +89,12 @@ document.addEventListener('DOMContentLoaded', function() {
             leaderNameInput.focus();
             return;
         }
+	// New: Validation phone number
+	if (!userPhoneInput.value.trim()) {
+	    alert ('Please enter your phone number before generating lighthouse.');
+	    userPhoneInput.focus();
+	    return;
+	}
         
         const count = parseInt(lighthouseCountInput.value);
         
@@ -96,10 +112,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Clear existing entries
         lighthouseEntriesContainer.innerHTML = '';
         lighthouseCounter = 0;
+	lighthouseEntriesContainer.innerHTML = '';
         
         // Create new entries
         for (let i = 0; i < count; i++) {
-            lighthouseEntriesContainer.innerHTML += createLighthouseEntry(i);
+            lighthouseEntriesContainer.insertAdjacentHTML('beforeend', createLighthouseEntry(i + 1));
         }
         
         // Set default date to tomorrow
@@ -163,7 +180,6 @@ document.addEventListener('DOMContentLoaded', function() {
         lighthouseCounter = entries.length;
         lighthouseCountInput.value = entries.length;
     }
-    
     // Function to add another lighthouse entry
     function addAnotherLighthouse() {
         // Validate user info before adding
@@ -179,12 +195,30 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        lighthouseEntriesContainer.innerHTML += createLighthouseEntry(lighthouseCounter);
+        // New: Validate phone number
+        if (!userPhoneInput.value.trim()) {
+            alert('Please enter your phone number before adding a lighthouse entry.');
+            userPhoneInput.focus();
+            return;
+        }
+
+        // Get current number of entries
+        const currentEntries = document.querySelectorAll('.lighthouse-entry');
+        const nextEntryNumber = currentEntries.length + 1;
+        
+        // Create the new entry
+const newEntryHTML = createLighthouseEntry(nextEntryNumber);
+
+// Append the new entry WITHOUT clearing existing ones
+lighthouseEntriesContainer.insertAdjacentHTML('beforeend', newEntryHTML);
+
+        // Update the counter to match
+        lighthouseCounter = nextEntryNumber;
         lighthouseCountInput.value = lighthouseCounter;
         
         // Set default date to tomorrow for the new entry
-        const entries = document.querySelectorAll('.lighthouse-entry');
-        const lastEntry = entries[entries.length - 1];
+        const allEntries = document.querySelectorAll('.lighthouse-entry');
+        const lastEntry = allEntries[allEntries.length - 1];
         const dateInput = lastEntry.querySelector('input[type="datetime-local"]');
         
         if (dateInput) {
@@ -192,8 +226,16 @@ document.addEventListener('DOMContentLoaded', function() {
             tomorrow.setDate(tomorrow.getDate() + 1);
             dateInput.value = tomorrow.toISOString().slice(0, 16);
         }
+        
+        // Scroll to the new entry
+        lastEntry.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'nearest'
+        });
+        
+        console.log('DEBUG: Added new entry #', nextEntryNumber);
+        console.log('DEBUG: Total entries now:', allEntries.length);
     }
-    
     // Function to send data to Google Sheets
     async function sendToGoogleSheets(formData) {
         // ============================================
@@ -205,7 +247,7 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             // Show loading state
             const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<span class="loading"></span>Sending to Google Sheets...';
+            submitBtn.innerHTML = '<span class="loading"></span>Submitting...';
             submitBtn.disabled = true;
             
             // Send data to Google Apps Script
@@ -233,7 +275,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error sending to Google Sheets:', error);
             submitBtn.innerHTML = 'Error - Try Again';
             setTimeout(() => {
-                submitBtn.innerHTML = 'Submit to Google Sheets';
+                submitBtn.innerHTML = 'Submit';
                 submitBtn.disabled = false;
             }, 3000);
             return false;
@@ -256,6 +298,13 @@ document.addEventListener('DOMContentLoaded', function() {
             leaderNameInput.focus();
             return;
         }
+
+	// Validate phone number
+	if (!userPhoneInput.value.trim()) { 
+	    alert('Please enter your phone number.');
+	    userPhoneInput.focus();
+	    return;
+	}
         
         // Collect all lighthouse data
         const lighthouseEntries = document.querySelectorAll('.lighthouse-entry');
@@ -311,7 +360,7 @@ document.addEventListener('DOMContentLoaded', function() {
             submittedBy: userNameInput.value.trim(),
             leaderName: leaderNameInput.value.trim(),
             userEmail: userEmailInput.value.trim(),
-            groupName: groupNameInput.value.trim(),
+            userPhone: userPhoneInput.value.trim(),
             totalLighthouses: lighthouseData.length,
             lighthouses: lighthouseData
         };
@@ -323,19 +372,16 @@ document.addEventListener('DOMContentLoaded', function() {
         displaySubmission(formData, sentToGoogleSheets);
     }
     
-    // Function to display submission results
+ // Function to display submission results
     function displaySubmission(formData, sentToGoogleSheets) {
         // Create a formatted display of the submitted data
         let summaryHTML = `
             <h2 class="section-title" style="margin-top: 30px;">
-                ${sentToGoogleSheets ? '✅ Submitted Successfully!' : '📋 Submission Summary'}
+                ✅ Submitted Successfully!
             </h2>
-            ${sentToGoogleSheets ? 
-                '<p style="background-color: #e8f5e9; padding: 10px; border-radius: 5px; margin-bottom: 20px;">✓ Data has been sent to Google Sheets</p>' : 
-                '<p style="background-color: #fff3e0; padding: 10px; border-radius: 5px; margin-bottom: 20px;">⚠️ Note: Google Sheets integration needs setup. Data saved locally only.</p>'
-            }
             
             <div class="user-info-section" style="margin-bottom: 30px;">
+         
                 <h3 style="color: #005792; margin-bottom: 15px;">User Information</h3>
                 <div class="user-info-grid">
                     <div class="form-group">
@@ -351,13 +397,13 @@ document.addEventListener('DOMContentLoaded', function() {
                             <label>Email:</label>
                             <p style="padding: 10px; background-color: white; border-radius: 5px;">${formData.userEmail}</p>
                         </div>
-                    ` : ''}
-                    ${formData.groupName ? `
-                        <div class="form-group">
-                            <label>Group/Organization:</label>
-                            <p style="padding: 10px; background-color: white; border-radius: 5px;">${formData.groupName}</p>
-                        </div>
-                    ` : ''}
+		    ` : ''}
+                   ${formData.userPhone ? `
+    <div class="form-group">
+        <label>Phone Number:</label>
+        <p style="padding: 10px; background-color: white; border-radius: 5px;">${formData.userPhone}</p>
+    </div>
+` : ''}
                 </div>
             </div>
         `;
@@ -432,16 +478,11 @@ document.addEventListener('DOMContentLoaded', function() {
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         `;
         
-        modalContent.innerHTML = summaryHTML + `
-            <div style="text-align: center; margin-top: 30px;">
-                <button id="closeModal" class="btn btn-primary">Close and Start New Entry</button>
-                ${sentToGoogleSheets ? `
-                    <button id="viewSheets" class="btn btn-secondary" style="margin-left: 10px;">
-                        View Google Sheet
-                    </button>
-                ` : ''}
-            </div>
-        `;
+       modalContent.innerHTML = summaryHTML + `
+    <div style="text-align: center; margin-top: 30px;">
+        <button id="closeModal" class="btn btn-primary">Close and Start New Entry</button>
+    </div>
+`;
         
         modal.appendChild(modalContent);
         document.body.appendChild(modal);
@@ -454,14 +495,7 @@ document.addEventListener('DOMContentLoaded', function() {
             lighthouseEntriesContainer.innerHTML = '<div class="empty-state"><h3>No lighthouse entries yet</h3><p>Enter the number of lighthouses above and click "Generate Entry Forms" to get started.</p></div>';
             lighthouseCounter = 0;
             userNameInput.focus();
-        });
-        
-        // View Google Sheets button
-        if (sentToGoogleSheets) {
-            document.getElementById('viewSheets').addEventListener('click', function() {
-                window.open('https://docs.google.com/spreadsheets/d/your-sheet-id', '_blank');
             });
-        }
         
         // Also log to console for debugging
         console.log('Form Submission:', formData);
