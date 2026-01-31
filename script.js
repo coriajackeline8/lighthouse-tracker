@@ -241,7 +241,7 @@ lighthouseEntriesContainer.insertAdjacentHTML('beforeend', newEntryHTML);
         // ============================================
         // SETUP REQUIRED: Replace with your Google Apps Script URL
         // ============================================
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbySpPNroarI27TEN2F9some7928AOkO1YanFMTPxsfirwsa2S_emjtEZMRfMmXGym7S/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7Mi24hyEAFFdDt6Uq5kB9jUK-xMYP_m75qnluo_RUm1lYKb0xY6FCFiH177Y8SmuS/exec';
         // ============================================
         
         try {
